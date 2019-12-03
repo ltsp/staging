@@ -1,3 +1,12 @@
+ltsp-cloud (19.12-1) unstable; urgency=low
+
+  * Sync with master branch
+  * Unify boolean options (#100)
+  * Introduce ADD_IMAGE_EXCLUDES OMIT_IMAGE_EXCLUDES options (#83)
+  * Fix IMAGE_TO_RAM when image larger than 10% of RAM (#102)
+
+ -- Andrei Kvapil <kvapss@gmail.com>  Tue, 03 Dec 2019 17:31:04 +0100
+
 ltsp-cloud (19.11.2-1) unstable; urgency=low
 
   * Show applets in ltsp --help (#80)
