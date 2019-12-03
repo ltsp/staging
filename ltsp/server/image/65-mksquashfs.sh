@@ -5,7 +5,7 @@
 # Call mksquashfs to generate the image
 
 mksquashfs_main() {
-    local ef_upstream ef_local kernel_src
+    local ef_upstream ef_local ef_merged kernel_src
 
     # Unset IONICE means use the default; IONICE="" means don't use anything
     if [ -z "${IONICE+nonempty}" ]; then
@@ -25,6 +25,16 @@ mksquashfs_main() {
         ef_upstream="$_APPLET_DIR/image.excludes"
     fi
     re mkdir -p "$BASE_DIR/images"
+
+    # If these variables set, we need to generate new image.excludes
+    if [ -n "$ADD_IMAGE_EXCLUDES" ] || [ -n "$OMIT_IMAGE_EXCLUDES" ]; then
+        ef_merged="$(re mktemp)"
+        exit_command "rm -f $ef_merged $ef_merged.tmp"
+        omit_image_excludes "$ef_upstream" > "$ef_merged.tmp"
+        add_image_excludes "$ef_merged.tmp" > "$ef_merged"
+        ef_upstream="$ef_merged"
+    fi
+
     # -regex might be nicer: https://stackoverflow.com/questions/57304278
     re $IONICE mksquashfs  "$_COW_DIR" "$BASE_DIR/images/$_IMG_NAME.img.tmp" \
         -noappend -wildcards ${ef_upstream:+-ef "$ef_upstream"} \
@@ -43,4 +53,16 @@ mksquashfs_main() {
     echo "Running: ltsp kernel ${IN_PLACE:+-I"$IN_PLACE"} $kernel_src"
     re "$0" kernel ${KERNEL_INITRD:+-k "$KERNEL_INITRD"} "${IN_PLACE:+-I"$IN_PLACE"}" \
         "$kernel_src"
+}
+
+# Append image excludes with ADD_IMAGE_EXCLUDES
+add_image_excludes() {
+    echo "$ADD_IMAGE_EXCLUDES" | sort | \
+        { exec 3<&0; sort "$1" | comm --output-delimiter= /dev/fd/0 /dev/fd/4 4<&3; }
+}
+
+# Remove image excludes with OMIT_IMAGE_EXCLUDES
+omit_image_excludes() {
+    echo "$OMIT_IMAGE_EXCLUDES" | sort | \
+        { exec 3<&0; sort "$1" | comm -3 --output-delimiter= /dev/fd/0 /dev/fd/4 4<&3; }
 }
