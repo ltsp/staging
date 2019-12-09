@@ -1,9 +1,20 @@
+ltsp-cloud (19.12.2-1) unstable; urgency=low
+
+  * Sync with master branch (19.12)
+  * Use pam-auth-update to install pamltsp (#104)
+
+ -- Andrei Kvapil <kvapss@gmail.com>  Mon, 09 Dec 2019 15:26:51 +0100
+
 ltsp-cloud (19.12-1) unstable; urgency=low
 
   * Sync with master branch
   * Unify boolean options (#100)
   * Introduce ADD_IMAGE_EXCLUDES OMIT_IMAGE_EXCLUDES options (#83)
   * Fix IMAGE_TO_RAM when image larger than 10% of RAM (#102)
+  * Fuse3 doesn't need nonempty param (#99)
+  * Demote sshfs to Recommends (#98)
+  * Die after getopt errors (#94)
+  * Move back to ltsp.org
 
  -- Andrei Kvapil <kvapss@gmail.com>  Tue, 03 Dec 2019 17:31:04 +0100
 
@@ -18,6 +29,10 @@ ltsp-cloud (19.11.2-1) unstable; urgency=low
   * Introduce ltsp-http (#91)
   * Introduce --http --http-image options (#92)
   * Introduce ganesha-nfs support (#88)
+  * Workaround single quote Ronn bug (#72)
+  * Document MENU_TIMEOUT for [server], not [clients] (#69)
+  * Introduce textifb (#69)
+  * Only modprobe loop if it's not loaded (#70)
 
  -- Andrei Kvapil <kvapss@gmail.com>  Mon, 25 Nov 2019 08:22:32 +0100
 
