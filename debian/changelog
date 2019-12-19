@@ -1,3 +1,16 @@
+ltsp-cloud (19.12.3-1) unstable; urgency=low
+
+  * Sync with master branch
+  * Add var/spool/squid/* to image.excludes (#106)
+  * Amend tftp-root path (#107)
+  * Introduce CUPS_SERVER (#8)
+  * Allow global KERNEL_PARAMETERS (#110)
+  * Allow global DEFAULT_IMAGE
+  * Options --http --http-image moved to ltsp-ipxe applet (#109)
+  * Introduce ltsp-grub (#108)
+
+ -- Andrei Kvapil <kvapss@gmail.com>  Thu, 19 Dec 2019 18:10:29 +0100
+
 ltsp-cloud (19.12.2-1) unstable; urgency=low
 
   * Sync with master branch (19.12)
