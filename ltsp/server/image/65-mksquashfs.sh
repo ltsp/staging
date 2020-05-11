@@ -3,9 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Call mksquashfs to generate the image
+# @LTSP.CONF: ADD_IMAGE_EXCLUDES OMIT_IMAGE_EXCLUDES
 
 mksquashfs_main() {
-    local ef_upstream ef_local ef_merged kernel_src
+    local ie
 
     # Unset IONICE means use the default; IONICE="" means don't use anything
     if [ -z "${IONICE+nonempty}" ]; then
@@ -14,31 +15,13 @@ mksquashfs_main() {
             IONICE="$IONICE ionice -c3"
         fi
     fi
-    if [ -f /etc/ltsp/image-local.excludes ]; then
-        ef_local=/etc/ltsp/image-local.excludes
-    else
-        unset ef_local
-    fi
-    if [ -f /etc/ltsp/image.excludes ]; then
-        ef_upstream=/etc/ltsp/image.excludes
-    else
-        ef_upstream="$_APPLET_DIR/image.excludes"
-    fi
     re mkdir -p "$BASE_DIR/images"
-
-    # If these variables set, we need to generate new image.excludes
-    if [ -n "$ADD_IMAGE_EXCLUDES" ] || [ -n "$OMIT_IMAGE_EXCLUDES" ]; then
-        ef_merged="$(re mktemp)"
-        exit_command "rm -f $ef_merged $ef_merged.tmp"
-        omit_image_excludes "$ef_upstream" > "$ef_merged.tmp"
-        add_image_excludes "$ef_merged.tmp" > "$ef_merged"
-        ef_upstream="$ef_merged"
-    fi
-
+    ie=$(image_excludes)
+    # image_excludes can't call exit_command because of the subshell
+    test "${ie%.tmp}" != "$ie" && exit_command "rw rm '$ie'"
     # -regex might be nicer: https://stackoverflow.com/questions/57304278
     re $IONICE mksquashfs  "$_COW_DIR" "$BASE_DIR/images/$_IMG_NAME.img.tmp" \
-        -noappend -wildcards ${ef_upstream:+-ef "$ef_upstream"} \
-        ${ef_local:+-ef "$ef_local"} $MKSQUASHFS_PARAMS
+        -noappend -wildcards -ef "$ie" $MKSQUASHFS_PARAMS
     if [ "$BACKUP" != 0 ] && [ -f "$BASE_DIR/images/$_IMG_NAME.img" ]; then
         re mv "$BASE_DIR/images/$_IMG_NAME.img" "$BASE_DIR/images/$_IMG_NAME.img.old"
     fi
@@ -55,14 +38,35 @@ mksquashfs_main() {
         "$kernel_src"
 }
 
-# Append image excludes with ADD_IMAGE_EXCLUDES
-add_image_excludes() {
-    echo "$ADD_IMAGE_EXCLUDES" | sort | \
-        { exec 3<&0; sort "$1" | comm --output-delimiter= /dev/fd/0 /dev/fd/4 4<&3; }
-}
+# Handle ADD_IMAGE_EXCLUDES and OMIT_IMAGE_EXCLUDES
+image_excludes() {
+    local src dst inp out
 
-# Remove image excludes with OMIT_IMAGE_EXCLUDES
-omit_image_excludes() {
-    echo "$OMIT_IMAGE_EXCLUDES" | sort | \
-        { exec 3<&0; sort "$1" | comm -3 --output-delimiter= /dev/fd/0 /dev/fd/4 4<&3; }
+    if [ -f /etc/ltsp/image.excludes ]; then
+        src=/etc/ltsp/image.excludes
+    else
+        src="$_APPLET_DIR/image.excludes"
+    fi
+    if [ -z "$ADD_IMAGE_EXCLUDES$OMIT_IMAGE_EXCLUDES" ]; then
+        echo "$src"
+        return 0
+    fi
+    dst=$(re readlink -f "$_COW_DIR/../image.excludes.tmp")
+    # comm requires all input to be sorted in the current locale
+    re sort "$src" > "$dst"
+    if [ -f "$OMIT_IMAGE_EXCLUDES" ]; then
+        inp=$(re sort "$OMIT_IMAGE_EXCLUDES")
+    else
+        inp=$(echo "$OMIT_IMAGE_EXCLUDES" | re sort)
+    fi
+    out=$(echo "$inp" | re comm - "$dst" -13)
+    {
+        if [ -f "$ADD_IMAGE_EXCLUDES" ]; then
+            cat "$ADD_IMAGE_EXCLUDES"
+        else
+            echo "$ADD_IMAGE_EXCLUDES"
+        fi
+        echo "$out"
+    } | grep -v '^#' | re sort -u > "$dst"
+    echo "$dst"
 }

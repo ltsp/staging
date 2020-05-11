@@ -1,3 +1,71 @@
+ltsp-cloud (20.04-1) unstable; urgency=medium
+
+  [ Andrei Kvapil ]
+  * Sync with master branch
+
+  [ Alkis Georgopoulos ]
+  * Fix NFS chroot booting regression (#126)
+  * Exclude account database backups from the generated image
+  * Use eval_percent in PWMERGE_* (#118)
+  * Optimize autodetection for gnome-keyring-daemon removal (#115)
+  * Empty /var/log in ltsp init (#123)
+  * Disable snap refresh and hardlinks (#120)
+  * Update masked services for Ubuntu 20.04 (#124)
+  * Use absolute symlink for ltsp.service (#121)
+  * When disabling cups, also disable cups-browsed
+
+  [ Alkis Georgopoulos ]
+  * Permit netbooting by just copying the /usr/share/ltsp directory
+  * Allow separate boot partition (#43)
+  * Server-side support for Raspberry Pis (#68)
+  * Introduce ADD_IMAGE_EXCLUDES and OMIT_IMAGE_EXCLUDES (#83)
+
+  [ Vagrant Cascadian ]
+  * debian/copyright: Use https URL for gnu.org licenses page
+
+  [ Alkis Georgopoulos ]
+  * Avoid warning when unlocking screensaver
+  * If systemd units cannot be disabled, warn without failing
+  * Restore live CD netbooting (#43)
+
+  [ Vagrant Cascadian ]
+  * docs/ltsp.conf: Fix spelling of "overridden".
+  * debian/control: Update Standards-Version to 4.5.0, no changes.
+  * Make cups mask only warn on failure.
+  * Add cups.path and cups.socket to default masked services.
+
+  [ Alkis Georgopoulos ]
+  * Don't activate debug_shell while inside a subshell
+  * Avoid partprobe race condition (#112)
+  * Consolidate systemctl calls
+
+  [ Alkis Georgopoulos ]
+  * Add var/spool/squid/* to image.excludes (#106)
+  * Amend tftp-root path (#107)
+  * pamltsp is not an LTSP applet and can't use is_command
+  * Introduce CUPS_SERVER (#8)
+
+  [ kvaps ]
+  * Allow global KERNEL_PARAMETERS (#110)
+
+  [ Alkis Georgopoulos ]
+  * Allow global DEFAULT_IMAGE
+
+  [ Vagrant Cascadian ]
+  * Add var/cache/squid-deb-proxy/* to image.excludes
+
+  [ Alkis Georgopoulos ]
+  * Use pam-auth-update to install pamltsp (#104)
+  * Fuse3 doesn't need nonempty param (#99)
+  * Demote sshfs to Recommends (#98)
+  * Die after getopt errors (#94)
+  * Introduce IMAGE_TO_RAM parameter
+  * Introduce OMIT_FUNCTIONS parameter
+  * Move back to ltsp.org
+  * Show applets in ltsp --help (#80)
+
+ -- Andrei Kvapil <kvapss@gmail.com>  Thu, 11 May 2020 14:38:00 +0100
+
 ltsp-cloud (19.12.3-1) unstable; urgency=low
 
   * Sync with master branch
