@@ -1,3 +1,20 @@
+ltsp-cloud (20.08-1) unstable; urgency=low
+
+  [ Andrei Kvapil ]
+  * Sync with master branch
+	* Fix network configuration for HTTP booting method (#144)
+	* Disable root= check for initramfs (#90)
+
+  [ Alkis Georgopoulos ]
+  * Use sftp auth to allow disabling ssh logins (#128)
+  * Set upstream metadata fields (#129)
+  * Support multiseat (#133)
+  * Support netbooting without an initrd (#68)
+  * Default to READ_AHEAD_KB=128 (#27)
+  * Add simple NFS_HOME example in ltsp-nfs.5.md
+
+ -- Andrei Kvapil <kvapss@gmail.com>  Wed, 12 Aug 2020 16:59:17 +0200
+
 ltsp-cloud (20.04-1) unstable; urgency=medium
 
   [ Andrei Kvapil ]
