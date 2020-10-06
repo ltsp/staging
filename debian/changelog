@@ -1,9 +1,16 @@
+ltsp-cloud (20.10-1) unstable; urgency=low
+
+  * Sync with master branch
+  * Allow using --in-place option for root filesystem
+
+ -- Andrei Kvapil <kvapss@gmail.com>  Tue, 06 Oct 2020 15:36:45 +0200
+
 ltsp-cloud (20.08-1) unstable; urgency=low
 
   [ Andrei Kvapil ]
   * Sync with master branch
-	* Fix network configuration for HTTP booting method (#144)
-	* Disable root= check for HTTP booting method (#90)
+  * Fix network configuration for HTTP booting method (#144)
+  * Disable root= check for HTTP booting method (#90)
 
   [ Alkis Georgopoulos ]
   * Use sftp auth to allow disabling ssh logins (#128)
